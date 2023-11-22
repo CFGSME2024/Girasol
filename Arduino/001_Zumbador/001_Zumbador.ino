@@ -2,34 +2,28 @@
 **                                                                               **
 **                           Iker Clemente Palacios                              **
 **                                   22/11/23                                    **
-**                   Prova LDR i ajustar l'OFFSET de llum entre ells             **
+**                     Proba zumbador encendre i parar cada 0,5s                 **
 **                                                                               **
 **********************************************************************************/
 
 //********** Includes *************************************************************
 
 //********** Variables ************************************************************
-int LDRizquierdo=A1; //Fotoresistencia pin analogico 1 de arduino
-int LDRderecho=A0;
-int izquierda=0; //Valor llegit del LDR esquerra
-int derecha=0;  //Valor llegit del LDR dreta
+const int zumbador=8;
 
 //********** Setup ****************************************************************
 void setup()
 {
-  pinMode(LDR,INPUT);
-  pinMode(LDR2,INPUT);
-  Serial.Beginln(9600);
+  pinMode(zumbador,OUTPUT);
 }
 
 //********** Loop *****************************************************************
 void loop()
 {
-  izquierda=analogRead(LDRizquierdo)+320;
-  derecha=analogRead(LDRderecho);
-  Serial.print(izquierda);
-  Serial.print("    ");
-  Serial.println(derecha);
+  digitalWrite(zumbador,HIGH);
+  delay(500);
+  digitalWrite(zumbador,LOW);
+  delay(500);
 }
 
 //********** Funcions *************************************************************
