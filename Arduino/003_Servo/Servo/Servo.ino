@@ -2,48 +2,37 @@
 **                                                                               **
 **                           Iker Clemente Palacios                              **
 **                                   23/11/23                                    **
-**                       Encontrar dirección del display                         **
+**                         Programa complet del girasol                          **
 **                                                                               **
 **********************************************************************************/
 
 //********** Includes *************************************************************
-#include <Wire.h>
+#include <Servo.h>
 
 //********** Variables ************************************************************
+Servo myservo;
+int pos=90; //variable per emmagatzemar la variable del servo log 6
+const int ServoMotor=9;
 
 //********** Setup ****************************************************************
 void setup() 
 {
-  Wire.begin();
-  Serial.begin(9600);
+  myservo.attach(ServoMotor);
+  myservo.write(pos);
+
 }
 
 //********** Loop *****************************************************************
 void loop() 
 {
- byte codigoDeRespuesta, direccion;
- int dispositivosEncontrados = 0;
- Serial.println("\n\nBuscando dispositivos...");
-
-  for (direccion = 1; direccion < 127; direccion++ ) {
-    Wire.beginTransmission(direccion);
-    codigoDeRespuesta = Wire.endTransmission();
-
-    if (codigoDeRespuesta == 0) {
-      Serial.print("Dispositivo encontrado en la dirección 0x");
-      if (direccion < 16)
-        Serial.print("0");
-      Serial.print(direccion, HEX);
-       dispositivosEncontrados++;
-    }else if (codigoDeRespuesta == 4) {
-      Serial.print("Error desconocido en la dirección 0x");
-      if (direccion < 16)
-        Serial.print("0");
-      Serial.println(direccion, HEX);
-    }
+  if(pos<100)
+  {
+   pos=pos-1;
   }
-  if (dispositivosEncontrados == 0) Serial.println("No se encontró ningún dispositivo");
-  delay(1000);
+  
+  else
+  {
+    pos=pos+1;
+  }
 }
-
 //********** Funcions *************************************************************
