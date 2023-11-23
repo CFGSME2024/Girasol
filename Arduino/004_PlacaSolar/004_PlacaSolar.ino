@@ -16,9 +16,6 @@ int Valor_Placa;
 void setup() 
 {
   pinMode (Placa,INPUT);
-  
-
-
 }
 
 //********** Loop *****************************************************************
@@ -27,7 +24,6 @@ void loop()
   Valor_Placa=analogRead(Placa);
   Tensio=(Valor_Placa*5.0)/1023;
   Serial.print(Tensio);
-
 }
 
 //********** Funcions *************************************************************
