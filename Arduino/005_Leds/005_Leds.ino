@@ -8,7 +8,7 @@
 //********** Includes *************************************************************
 
 //********** Variables ************************************************************
-const int LedDret=2; //definim led 1 al pin 2
+const int LedDret=2;
 const int LedCentral=3; 
 const int LedEsquerra=4; 
 

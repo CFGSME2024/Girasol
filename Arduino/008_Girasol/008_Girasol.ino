@@ -11,93 +11,95 @@
 #include <LiquidCrystal_I2C.h>
 
 //********** Variables ************************************************************
-LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x3F for a 16 chars and 2 line display
-Servo myservo; 
+LiquidCrystal_I2C lcd(0x27,16,2);  //Definimos la direccion del display, en este caso se encuentra en 0x27,este LCD son 16 segmentos i 2 filas.
 
-int pos=90; //variable per emmagatzemar la variable del servo log 6
-int esquerra=0; //Valor llegit del LDR esquerra
-int dreta=0;  //Valor llegit del LDR dreta
-float Tensio=0;
-const int LDREsquerra=15; //Fotoresistencia pin analogico 1 de arduino
-const int LDRDret=14;
-const int LedDret=2; //definim led 1 al pin 2
-const int LedCentral=3; 
-const int LedEsquerra=4; 
-const int ServoMotor=9;
-const int Placa=A2;
-int Valor_Placa;
+Servo myservo; //Variable para controlar el servo 
+int pos=90; //Variable para almacenar la posicion del servomotor, lo iniciamos en 90º 
+int esquerra=0; //Variable para almacenar el valor del LDR izq
+int dreta=0;  //Variable para almacenar el valor del LDR derecha
+int Valor_Placa; //Variable para almacenar el valor de la placa solar
+float Tensio=0; //El float para admitir los decimales
+const int LDREsquerra=A1; //LDR I pin analogico 1 de arduino, añadimos el const para que su valor no se pueda cambiar
+const int LDRDret=A0; //LDR D pin analogico 0 de arduino
+const int LedDret=2; //Definimos led al pin 2
+const int LedCentral=3; //Definimos led al pin 3
+const int LedEsquerra=5; //Definimos led al pin 5
+const int Buzzer=8; //Definimos el Buzzer al pin 8
+const int ServoMotor=9; //Definimos el servo al pin 9
+const int Placa=A2; //Definimos placa solar al pin 2
 
 //********** Setup ****************************************************************
 void setup() 
 {
-  Serial.begin(9600);
-  myservo.attach(ServoMotor);
-  myservo.write(pos);
-  pinMode (LedDret,OUTPUT);
-  pinMode (LedCentral,OUTPUT);
-  pinMode (LedEsquerra,OUTPUT);
-  pinMode (Placa,INPUT);
-  pinMode(LDREsquerra,INPUT);
-  pinMode(LDRDret,INPUT);
-  lcd.begin();
-  lcd.clear();         
-  lcd.backlight();      // Make sure backlight is on 
+  Serial.begin(9600); //Iniziamos el monitor serie 
+  myservo.attach(ServoMotor); // Iniziamos el servo para que empiece a trabajar
+  myservo.write(pos); //Escribimos el valor de la variable en el servo
+  pinMode (LedDret,OUTPUT); //Añadimos el led derecho como salida
+  pinMode (LedCentral,OUTPUT); //Añadimos el led central como salida
+  pinMode (LedEsquerra,OUTPUT); //Añadimos el led izquierda como salida
+  pinMode (Buzzer,OUTPUT); //Añadimos el Buzzer como salida
+  pinMode (Placa,INPUT); //Añadimos la Placa como entrada
+  pinMode(LDREsquerra,INPUT); //Añadimos el LDR como entrada
+  pinMode(LDRDret,INPUT); //Añadimos el LDR como entrada
+  lcd.begin(); //Establece las dimensiones de la pantalla LCD
+  lcd.clear(); //Limpiamos pantalla   
+  lcd.backlight(); //Enciende la luz del fondo del LCD
 }
 
 //********** Loop *****************************************************************
 void loop() 
 {
-  Valor_Placa=analogRead(Placa);
-  Tensio=(Valor_Placa*5.0)/1023;
-  //llegeix el valor dels LDR
-  esquerra=analogRead(LDREsquerra)+220;
-  dreta=analogRead(LDRDret);
-  Serial.print(esquerra);
-  Serial.print("    ");
-  Serial.println(dreta);
-  //Comproba que la dreta sigui mayor que la esquerra,si es aixi moure a la dreta
-  // Print a message on both lines of the LCD.
-  lcd.clear();
-  lcd.setCursor(0,0);   //Set cursor to character 2 on line 0
-  lcd.print(esquerra);
-  lcd.setCursor(7,0);
-  lcd.print(pos);
-  lcd.setCursor(12,0);   //Move cursor to character 2 on line 1
-  lcd.print(dreta);
-  lcd.setCursor(0,1);
-  lcd.print(Tensio);
+  Valor_Placa=analogRead(Placa); //Lee el valor de la placa i asignalo a la variable
+  Tensio=(Valor_Placa*5.0)/1023; //Hacemos una operación para convertir el valor analogico, en tension
+  esquerra=analogRead(LDREsquerra); //Lee el valor del LDR i asignalo a la variable
+  dreta=analogRead(LDRDret); //Lee el valor del LDR i asignalo a la variable
+  Serial.print(esquerra); //Escribe el valor de LDR izquierda
+  Serial.print("    "); //Espacio
+  Serial.println(dreta); //Escribe el valor de LDR derecha
+  lcd.clear(); //Limpia la pantalla
+  lcd.setCursor(0,0); //Establezca el cursor en el carácter 0 de la línea 0
+  lcd.print(esquerra); //Muestra el valor del LDR Izquierdo
+  lcd.setCursor(7,0); //Establezca el cursor en el carácter 7 de la línea 0
+  lcd.print(pos); //Muestra la posición del servo
+  lcd.setCursor(12,0); //Establezca el cursor en el carácter 12 de la línea 0
+  lcd.print(dreta); //Muestra el valor del LDR Derecho
+  lcd.setCursor(0,1); //Establezca el cursor en el carácter 0 de la línea 1
+  lcd.print(Tensio); //Muestra el valor de la tensión absorbida de la célula solar
 
-if (esquerra >(dreta +30))
+if (esquerra >(dreta +30)) //Si izquierda es mas grande que derecha +30 (Un poco de margen por si varían el valor de los LDR).   
 {
-  digitalWrite(LedDret,HIGH);
-  digitalWrite(LedCentral,LOW);
-  digitalWrite(LedEsquerra,LOW);
-  delay(20);
-  if (pos < 179)
+  digitalWrite(LedDret,HIGH); //Enciende el led derecho
+  digitalWrite(LedCentral,LOW); //Apaga el led central
+  digitalWrite(LedEsquerra,LOW); //Apaga el led izquierda
+  delay(20); //Espera 20ms
+  if (pos < 179) //Si la posición del servo es mas pequeña a 179 grados
  {
-  pos=pos+1;
+  pos=pos+1; //Suma uno a la posición del servo
+  digitalWrite(Buzzer,HIGH); //Enciende el buzzer
  }
- myservo.write(pos);
+  myservo.write(pos); //Dale el valor de la variable, al servo
 }
-//comproba que la esquerra sigui mayor que la dreta, si es aixi moure a la esquerra
-else if(dreta > (esquerra +30))
+
+else if(dreta > (esquerra +30)) //Sino i sí la izquierda és mayor que la derecha
 {
-  digitalWrite(LedEsquerra,HIGH);
-  digitalWrite(LedCentral,LOW);
-  digitalWrite(LedDret,LOW);
-  delay(20);
-  if (pos > 1)
+  digitalWrite(LedEsquerra,HIGH); //Enciende el led izquierdo
+  digitalWrite(LedCentral,LOW); //Apaga el led central
+  digitalWrite(LedDret,LOW); //Apaga el led derecho
+  delay(20); //Espera 20ms
+  if (pos > 1) //Si la posición es mas grande que 1 grado
   { 
-    pos=pos-1;
+    pos=pos-1; //Resta 1 a la posición del servo
+    digitalWrite(Buzzer,HIGH); //Enciende el buzzer
   }
-  myservo.write(pos);
+  myservo.write(pos); //Dale el valor de la variable, al servo
 }
-else
+else //Sino
 {
-  digitalWrite(LedCentral,HIGH);
-  digitalWrite(LedEsquerra,LOW);
-  digitalWrite(LedDret,LOW);
-  delay(20);
+  digitalWrite(LedCentral,HIGH); //Enciende el led central
+  digitalWrite(LedEsquerra,LOW); //Apaga el led izquierda
+  digitalWrite(LedDret,LOW); //Apaga el led derecho
+  delay(20); //Espera 20ms
+  digitalWrite(Buzzer,LOW); //Apaga el buzzer 
 } }
 
 //********** Funcions *************************************************************
