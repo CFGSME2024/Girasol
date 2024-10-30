@@ -16,7 +16,7 @@ LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x3F for a 16 chars
 //********** Setup ****************************************************************
 void setup()
 {
-  lcd.begin();
+  lcd.begin(); //Inci LCD
   lcd.clear();         
   lcd.backlight();      
   
